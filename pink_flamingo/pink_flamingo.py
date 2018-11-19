@@ -12,3 +12,11 @@ def fizz_buzz(n):
     elif n % 5 == 0:
         return "buzz"
     return str(n)
+
+
+def main():
+    for i in range(1, 100):
+        print(fizz_buzz(i))
+
+if __name__ == '__main__':
+    main()
