@@ -3,6 +3,13 @@
 import unittest
 import pink_flamingo
 
+class TestFizzBuzz(unittest.TestCase):
+    def test_fizz(self):
+        fizzes = [i * 3 for i in range(10) if i%5 != 0]
+        for fizz in fizzes:
+            self.assertEqual("fizz", pink_flamingo.fizz_buzz(fizz), fizz)
+
+
 class TestFibonnaci(unittest.TestCase):
     def test_is_fib(self):
         fibnnacci_numbers = [1,2,3,5,8,13,21]
