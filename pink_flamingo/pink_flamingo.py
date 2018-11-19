@@ -14,7 +14,10 @@ def fizz_buzz(n):
     return str(n)
 
 def flamingo(n):
-    return fizz_buzz(n)
+    if is_fib(n):
+        return 'flamingo'
+    else:
+        return fizz_buzz(n)
 
 
 

@@ -25,7 +25,7 @@ class TestFizzBuzz(unittest.TestCase):
             self.assertEqual(str(number), pink_flamingo.fizz_buzz(number), number)
 
 
-FIBONNACCI_NUMBERS = [1,2,3,5,8,13,21]
+FIBONNACCI_NUMBERS = [1,2,3,5,8,13,21,89,610]
 NON_FIBONACCI_NUMBERS = [4,6,7,9,10,11,12,14,20,107,20000]
 class TestFibonnaci(unittest.TestCase):
     def test_is_fib(self):
@@ -45,3 +45,7 @@ class TestFlamingo(unittest.TestCase):
                 pink_flamingo.flamingo(n),
                 n
             )
+
+    def test_non_fizzbuzz_fibonnaci(self):
+        for n in FIBONNACCI_NUMBERS:
+            self.assertEqual("flamingo", pink_flamingo.flamingo(n), n)
