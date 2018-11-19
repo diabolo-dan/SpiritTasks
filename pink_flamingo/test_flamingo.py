@@ -9,6 +9,11 @@ class TestFizzBuzz(unittest.TestCase):
         for fizz in fizzes:
             self.assertEqual("fizz", pink_flamingo.fizz_buzz(fizz), fizz)
 
+    def test_buzzes(self):
+        buzzes = [i * 5 for i in range(10) if i%3 != 0]
+        for buzz in buzzes:
+            self.assertEqual("buzz", pink_flamingo.fizz_buzz(buzz), buzz)
+
 
 class TestFibonnaci(unittest.TestCase):
     def test_is_fib(self):
