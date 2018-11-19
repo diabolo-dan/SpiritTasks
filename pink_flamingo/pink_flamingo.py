@@ -11,3 +11,4 @@ def fizz_buzz(n):
         return "fizz"
     elif n % 5 == 0:
         return "buzz"
+    return str(n)

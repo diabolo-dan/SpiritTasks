@@ -19,6 +19,11 @@ class TestFizzBuzz(unittest.TestCase):
         for fizz_buzz in fizz_buzzes:
             self.assertEqual("fizzbuzz", pink_flamingo.fizz_buzz(fizz_buzz), fizz_buzz)
 
+    def test_normal_number(self):
+        normal_numbers = [i for i in range(100) if i % 5 != 0 and i % 3 != 0]
+        for number in normal_numbers:
+            self.assertEqual(str(number), pink_flamingo.fizz_buzz(number), number)
+
 
 class TestFibonnaci(unittest.TestCase):
     def test_is_fib(self):
