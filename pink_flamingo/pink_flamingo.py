@@ -13,6 +13,10 @@ def fizz_buzz(n):
         return "buzz"
     return str(n)
 
+def flamingo(n):
+    return fizz_buzz(n)
+
+
 
 def main():
     for i in range(1, 100):
