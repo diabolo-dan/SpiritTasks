@@ -14,16 +14,19 @@ def fizz_buzz(n):
     return str(n)
 
 def flamingo(n):
+    fizz_buzz_output = fizz_buzz(n)
     if is_fib(n):
-        return 'flamingo'
+        if fizz_buzz_output == 'fizzbuzz':
+            return 'pink flamingo'
+        else:
+            return 'flamingo'
     else:
-        return fizz_buzz(n)
-
+        return fizz_buzz_output
 
 
 def main():
     for i in range(1, 100):
-        print(fizz_buzz(i))
+        print(flamingo(i))
 
 if __name__ == '__main__':
     main()
