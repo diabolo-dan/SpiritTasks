@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 import gmpy
 
 def is_fib(n):
