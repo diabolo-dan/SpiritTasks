@@ -1,3 +1,5 @@
+import scala.util.Try
+
 class RomanNumeral(val value: Int) {
 
 }
@@ -14,12 +16,13 @@ object RomanNumeral {
     "M" -> 1000
   )
 
-  def apply(numeral: String): RomanNumeral = {
+  def apply(numeral: String): Try[RomanNumeral] = Try{
     val value = numeral.map(
-      c => baseNumerals.getOrElse(c.toString, 1)
+      c => baseNumerals.getOrElse(c.toString, {throw new InvalidNumeral()})
     ).sum
-
-    return new RomanNumeral(value)
+    new RomanNumeral(value)
   }
 
 }
+
+class InvalidNumeral extends IllegalArgumentException

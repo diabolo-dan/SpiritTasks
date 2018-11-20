@@ -1,8 +1,10 @@
-import org.scalatest.FreeSpec
+import org.scalatest.{AppendedClues, FreeSpec, Matchers, TryValues}
 
-class TestConversion extends FreeSpec {
+import scala.util.Try
+
+class TestConversion extends FreeSpec with Matchers with AppendedClues with TryValues {
   def assertNumeral(numeral: String, expectedValue: Int) =
-    assert(RomanNumeral(numeral).value == expectedValue, s": Numeral: $numeral")
+    RomanNumeral(numeral).success.value.value shouldBe expectedValue withClue s": Numeral: $numeral"
 
   "A Roman Numeral" - {
     "When written individually" - {
@@ -20,7 +22,19 @@ class TestConversion extends FreeSpec {
     "When Combined" - {
       "should be converted into the correct number" in {
         assertNumeral("MCX", 1110)
+        assertNumeral("XVI", 16)
       }
+    }
+
+    def assertBadNumeral(triedNumeral: Try[RomanNumeral]) = {
+      triedNumeral.failure.exception shouldBe a [InvalidNumeral]
+    }
+
+    "When including invalid characters" - {
+      "should raise an InvalidNumeral exception" in {
+        assertBadNumeral(RomanNumeral("R"))
+      }
+
     }
   }
 
