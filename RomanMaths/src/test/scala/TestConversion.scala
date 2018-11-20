@@ -16,6 +16,12 @@ class TestConversion extends FreeSpec {
         assertNumeral("M", 1000)
       }
     }
+
+    "When Combined" - {
+      "should be converted into the correct number" in {
+        assertNumeral("MCX", 1110)
+      }
+    }
   }
 
 

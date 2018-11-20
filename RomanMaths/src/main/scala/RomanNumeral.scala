@@ -15,7 +15,11 @@ object RomanNumeral {
   )
 
   def apply(numeral: String): RomanNumeral = {
-   return new RomanNumeral(baseNumerals.getOrElse(numeral, 1))
+    val value = numeral.map(
+      c => baseNumerals.getOrElse(c.toString, 1)
+    ).sum
+
+    return new RomanNumeral(value)
   }
 
 }
