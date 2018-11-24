@@ -16,13 +16,24 @@ object RomanNumeral {
     "M" -> 1000
   )
 
+  private def orderedNumerals =
+    baseNumerals.toSeq.sortBy(_._2).map(_._1).reverse
+
   def apply(numeral: String): Try[RomanNumeral] = Try{
-    val value = numeral.map(
-      c => baseNumerals.getOrElse(c.toString, {throw new InvalidNumeral()})
-    ).sum
+    val aggregatorZero = (numeral, 0)
+    val (remaining, value) = orderedNumerals.foldLeft(aggregatorZero)(numeralValueAggregator)
+    if (!remaining.isEmpty) {
+      throw new IllegalArgumentException(s"Invalid Numeral: $numeral")
+    }
     new RomanNumeral(value)
   }
 
-}
+  private def numeralValueAggregator(previous: (String, Int), target: String): (String, Int) = {
+    val (numeral, previousValue) = previous
+    val (matching, remaining) = numeral.span(_.toString == target)
+    val newValue = matching.size * baseNumerals(target)
+    (remaining, previousValue + newValue)
+  }
 
-class InvalidNumeral extends IllegalArgumentException
+
+}
