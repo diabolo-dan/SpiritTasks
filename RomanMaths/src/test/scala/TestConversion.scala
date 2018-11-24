@@ -36,13 +36,24 @@ class TestConversion extends FreeSpec with Matchers with AppendedClues with TryV
         }
 
         "In allowed reverse Orderings" - {
-          "should create the appropriate Value" in {
+          "should create the appropriate Value when alone" in {
             assertNumeral("IV", 4)
             assertNumeral("IX", 9)
             assertNumeral("XL", 40)
             assertNumeral("XC", 90)
             assertNumeral("CD", 400)
             assertNumeral("CM", 900)
+          }
+
+          "should create the appropriate value when composite" in {
+            assertNumeral("MCMXIX", 1919)
+          }
+        }
+
+        "With reverse orderings in the wrong order" - {
+          "should raise an exception" in {
+            assertBadNumeral("IXX")
+            assertBadNumeral("VIVV")
           }
         }
       }

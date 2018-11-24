@@ -68,4 +68,3 @@ object RomanNumeral {
     }.getOrElse(this)
   }
 }
-
