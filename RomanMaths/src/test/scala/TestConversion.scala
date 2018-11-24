@@ -54,6 +54,7 @@ class TestConversion extends FreeSpec with Matchers with AppendedClues with TryV
           "should raise an IllegalArgument exception" in {
             assertBadNumeral("IXX")
             assertBadNumeral("VIVV")
+            assertBadNumeral("VIV")
           }
         }
       }

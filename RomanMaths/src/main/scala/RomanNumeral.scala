@@ -47,11 +47,12 @@ object RomanNumeral {
 
   def apply(numeral: String): Try[RomanNumeral] = Try{
     val aggregatorZero = AggregationState(numeral, 0)
-    val result: AggregationState = orderedNumerals.foldLeft(aggregatorZero)(AggregationState.aggregate)
-    if (!result.numeral.isEmpty) {
+    val aggregation: AggregationState = orderedNumerals.foldLeft(aggregatorZero)(AggregationState.aggregate)
+    val result = new RomanNumeral(aggregation.value)
+    if (result.display != numeral) {
       throw new IllegalArgumentException(s"Invalid Numeral: $numeral")
     }
-    new RomanNumeral(result.value)
+    result
   }
 
 
