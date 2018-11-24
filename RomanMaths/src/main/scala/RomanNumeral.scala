@@ -5,7 +5,7 @@ class RomanNumeral(val value: Int) {
 }
 
 object RomanNumeral {
-  //TODO: Verify D/L are correct.
+
   private val baseNumerals = Map(
     "I" -> 1,
     "V" -> 5,
@@ -16,24 +16,56 @@ object RomanNumeral {
     "M" -> 1000
   )
 
+  private val prefixNumerals = Map(
+    "V" -> Option("I"),
+    "X" -> Option("I"),
+    "L" -> Option("X"),
+    "C" -> Option("X"),
+    "D" -> Option("C"),
+    "M" -> Option("C")
+  ).withDefaultValue(None)
+
+  private val compositeNumerals = {
+    for {
+      (numeral, value) <- baseNumerals
+      prefix <- prefixNumerals(numeral)
+    } yield (prefix + numeral -> (value - baseNumerals(prefix)))
+  }
+
   private def orderedNumerals =
     baseNumerals.toSeq.sortBy(_._2).map(_._1).reverse
 
   def apply(numeral: String): Try[RomanNumeral] = Try{
-    val aggregatorZero = (numeral, 0)
-    val (remaining, value) = orderedNumerals.foldLeft(aggregatorZero)(numeralValueAggregator)
-    if (!remaining.isEmpty) {
+    val aggregatorZero = AggregationState(numeral, 0)
+    val result: AggregationState = orderedNumerals.foldLeft(aggregatorZero)(AggregationState.aggregate)
+    if (!result.numeral.isEmpty) {
       throw new IllegalArgumentException(s"Invalid Numeral: $numeral")
     }
-    new RomanNumeral(value)
-  }
-
-  private def numeralValueAggregator(previous: (String, Int), target: String): (String, Int) = {
-    val (numeral, previousValue) = previous
-    val (matching, remaining) = numeral.span(_.toString == target)
-    val newValue = matching.size * baseNumerals(target)
-    (remaining, previousValue + newValue)
+    new RomanNumeral(result.value)
   }
 
 
+  object AggregationState {
+    def aggregate(a: AggregationState, b: String): AggregationState =
+      a.numeralValueAggregator(b)
+  }
+
+
+  case class AggregationState(numeral: String, value: Int) {
+
+    private def numeralValueAggregator(target: String): AggregationState = {
+      val (matching, remaining) = numeral.span(_.toString == target)
+      val newValue = matching.size * baseNumerals(target)
+      AggregationState(remaining, value + newValue).addPrefixValues(target) }
+
+    private def addPrefixValues(target: String): AggregationState = {
+      for {
+        prefix <- prefixNumerals(target)
+        prefixedTarget = prefix + target
+        if (numeral.startsWith(prefixedTarget))
+      }
+          yield AggregationState(numeral.substring(prefixedTarget.length), value + compositeNumerals(prefixedTarget))
+    }.getOrElse(this)
+  }
 }
+
