@@ -2,11 +2,21 @@ import scala.util.Try
 
 class RomanNumeral(val value: Int) {
 
+  private def orderedValues =
+    for {
+      (s, v) <- (RomanNumeral.baseNumerals ++ RomanNumeral.compositeNumerals).toSeq.sortBy(- _._2)
+    } yield (v, s)
+
+  def display: String = {
+    for {
+      x <- orderedValues.dropWhile(_._1 > value).headOption
+    } yield x._2 +  new RomanNumeral(value - x._1).display
+  }.getOrElse("")
 }
 
 object RomanNumeral {
 
-  private val baseNumerals = Map(
+  val baseNumerals = Map(
     "I" -> 1,
     "V" -> 5,
     "X" -> 10,
@@ -16,7 +26,7 @@ object RomanNumeral {
     "M" -> 1000
   )
 
-  private val prefixNumerals = Map(
+  val prefixNumerals = Map(
     "V" -> Option("I"),
     "X" -> Option("I"),
     "L" -> Option("X"),
@@ -25,7 +35,7 @@ object RomanNumeral {
     "M" -> Option("C")
   ).withDefaultValue(None)
 
-  private val compositeNumerals = {
+  val compositeNumerals = {
     for {
       (numeral, value) <- baseNumerals
       prefix <- prefixNumerals(numeral)

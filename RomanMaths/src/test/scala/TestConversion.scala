@@ -29,7 +29,7 @@ class TestConversion extends FreeSpec with Matchers with AppendedClues with TryV
         }
 
         "In the wrong order" - {
-          "should raise an InvalidNumeral Exception" in {
+          "should raise an IllegalArgument Exception" in {
             assertBadNumeral("IC")
             assertBadNumeral("VX")
           }
@@ -51,7 +51,7 @@ class TestConversion extends FreeSpec with Matchers with AppendedClues with TryV
         }
 
         "With reverse orderings in the wrong order" - {
-          "should raise an exception" in {
+          "should raise an IllegalArgument exception" in {
             assertBadNumeral("IXX")
             assertBadNumeral("VIVV")
           }
@@ -59,10 +59,20 @@ class TestConversion extends FreeSpec with Matchers with AppendedClues with TryV
       }
 
       "When including invalid characters" - {
-        "should raise an InvalidNumeral exception" in {
+        "should raise an IllegalArgument exception" in {
           assertBadNumeral("R")
           assertBadNumeral("XIA")
         }
+      }
+    }
+
+    "When displayed" - {
+      "should convert correctly" in {
+        new RomanNumeral(12).display shouldBe "XII"
+        new RomanNumeral(19).display shouldBe "XIX"
+        new RomanNumeral(1919).display shouldBe "MCMXIX"
+        new RomanNumeral(4).display shouldBe "IV"
+
       }
     }
   }
