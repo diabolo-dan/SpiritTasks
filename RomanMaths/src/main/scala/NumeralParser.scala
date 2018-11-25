@@ -1,6 +1,6 @@
-import scala.util.parsing.combinator.{RegexParsers, PackratParsers}
+import scala.util.parsing.combinator.RegexParsers
 
-trait NumeralParser extends RegexParsers with PackratParsers {
+trait NumeralParser extends RegexParsers {
   /*
   Parser based on the code found in the answer to:
    https://stackoverflow.com/questions/11533547/operator-precedence-with-scala-parser-combinators
@@ -20,4 +20,12 @@ trait NumeralParser extends RegexParsers with PackratParsers {
 
   def factor: Parser[Int] = romanNumeral | "(" ~> expr <~ ")"
 
+}
+
+object NumeralParser extends NumeralParser {
+  def parseExpression(expression: String): Option[RomanNumeral] =
+    parseAll(expr, expression) match {
+      case Success(value, _) => Option(new RomanNumeral(value))
+      case _ => None
+    }
 }
