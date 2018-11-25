@@ -67,6 +67,29 @@ class TestParsing extends FreeSpec with NumeralParser with Matchers with Appende
           parseExpression("XX / II / III") shouldBe 3
         }
       }
+      "with multiple forms" - {
+        "should have the correct precedence" in {
+          parseExpression("XX + X * II") shouldBe 40
+          parseExpression("XX - X / II") shouldBe 15
+          parseExpression("XX - X + II") shouldBe 12
+          parseExpression("X * X / II") shouldBe 50
+        }
+      }
+      "with brackets" - {
+        "should parse correctly" in {
+          parseExpression("(XX + V) + V") shouldBe 30
+          parseExpression("XX + (V + V)") shouldBe 30
+          parseExpression("XX + (V) + (V)") shouldBe 30
+          parseExpression("(XX + ((V) + (V)))") shouldBe 30
+        }
+        "should have maximum precedence for brackets" in {
+          parseExpression("(X + X) * II") shouldBe 40
+          parseExpression("X + (X * II)") shouldBe 30
+          parseExpression("(X + X) * (II - II)") shouldBe 0
+          parseExpression("X - (V + II)") shouldBe 3
+        }
+      }
     }
+
   }
 }

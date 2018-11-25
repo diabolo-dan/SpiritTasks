@@ -18,6 +18,6 @@ trait NumeralParser extends RegexParsers with PackratParsers {
   def times:  Parser[Int => Int] = "*" ~ factor                 ^^ {case "*" ~ b => _ * b }
   def divide: Parser[Int => Int] = "/" ~ factor                 ^^ {case "/" ~ b => _ / b}
 
-  def factor: Parser[Int] = romanNumeral
+  def factor: Parser[Int] = romanNumeral | "(" ~> expr <~ ")"
 
 }
