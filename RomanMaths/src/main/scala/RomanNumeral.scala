@@ -2,19 +2,51 @@ import scala.util.Try
 
 class RomanNumeral(val value: Int) {
 
-  private def orderedValues =
+  lazy val display: String = {
     for {
-      (s, v) <- (RomanNumeral.baseNumerals ++ RomanNumeral.compositeNumerals).toSeq.sortBy(- _._2)
-    } yield (v, s)
-
-  def display: String = {
-    for {
-      x <- orderedValues.dropWhile(_._1 > value).headOption
-    } yield x._2 +  new RomanNumeral(value - x._1).display
+      (numeralValue, numeral) <- RomanNumeralMappings.orderedValues.dropWhile(_._1 > value).headOption
+      numberOfAppearances = value / numeralValue
+      remaining = value % numeralValue
+    } yield numeral * numberOfAppearances +  new RomanNumeral(remaining).display
   }.getOrElse("")
 }
 
 object RomanNumeral {
+
+  def apply(numeral: String): Try[RomanNumeral] = Try{
+    val result = aggregateNumeral(numeral)
+    require(result.display == numeral, s"Invalid Numeral: $numeral")
+    result
+  }
+
+  private def aggregateNumeral(numeral: String): RomanNumeral = {
+    val aggregatorZero = AggregationState(numeral, 0)
+    val aggregation = RomanNumeralMappings.orderedNumerals.foldLeft(aggregatorZero)(aggregationOperator)
+    new RomanNumeral(aggregation.value)
+  }
+
+  private def aggregationOperator(a: AggregationState, b: String): AggregationState =
+    a.numeralValueAggregator(b)
+
+  private case class AggregationState(numeral: String, value: Int) {
+
+    def numeralValueAggregator(target: String): AggregationState = {
+      val (matching, remaining) = numeral.span(_.toString == target)
+      val newValue = matching.size * RomanNumeralMappings.baseNumerals(target)
+      AggregationState(remaining, value + newValue).addPrefixValues(target) }
+
+    private def addPrefixValues(target: String): AggregationState = {
+      for {
+        prefix <- RomanNumeralMappings.prefixNumerals(target)
+        prefixedTarget = prefix + target
+        if (numeral.startsWith(prefixedTarget))
+      }
+          yield AggregationState(numeral.substring(prefixedTarget.length), value + RomanNumeralMappings.compositeNumerals(prefixedTarget))
+    }.getOrElse(this)
+  }
+}
+
+object RomanNumeralMappings {
 
   val baseNumerals = Map(
     "I" -> 1,
@@ -25,7 +57,6 @@ object RomanNumeral {
     "D" -> 500,
     "M" -> 1000
   )
-
   val prefixNumerals = Map(
     "V" -> Option("I"),
     "X" -> Option("I"),
@@ -42,40 +73,12 @@ object RomanNumeral {
     } yield (prefix + numeral -> (value - baseNumerals(prefix)))
   }
 
-  private def orderedNumerals =
+  val orderedNumerals =
     baseNumerals.toSeq.sortBy(_._2).map(_._1).reverse
 
-  def apply(numeral: String): Try[RomanNumeral] = Try{
-    val aggregatorZero = AggregationState(numeral, 0)
-    val aggregation: AggregationState = orderedNumerals.foldLeft(aggregatorZero)(AggregationState.aggregate)
-    val result = new RomanNumeral(aggregation.value)
-    if (result.display != numeral) {
-      throw new IllegalArgumentException(s"Invalid Numeral: $numeral")
-    }
-    result
-  }
 
-
-  object AggregationState {
-    def aggregate(a: AggregationState, b: String): AggregationState =
-      a.numeralValueAggregator(b)
-  }
-
-
-  case class AggregationState(numeral: String, value: Int) {
-
-    private def numeralValueAggregator(target: String): AggregationState = {
-      val (matching, remaining) = numeral.span(_.toString == target)
-      val newValue = matching.size * baseNumerals(target)
-      AggregationState(remaining, value + newValue).addPrefixValues(target) }
-
-    private def addPrefixValues(target: String): AggregationState = {
-      for {
-        prefix <- prefixNumerals(target)
-        prefixedTarget = prefix + target
-        if (numeral.startsWith(prefixedTarget))
-      }
-          yield AggregationState(numeral.substring(prefixedTarget.length), value + compositeNumerals(prefixedTarget))
-    }.getOrElse(this)
-  }
+  val orderedValues =
+    for {
+      (s, v) <- (baseNumerals ++ compositeNumerals).toSeq.sortBy(- _._2)
+    } yield (v, s)
 }
