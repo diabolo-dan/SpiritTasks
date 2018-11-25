@@ -47,6 +47,13 @@ class TestParsing extends FreeSpec with NumeralParser with Matchers with Appende
       }
     }
     "for a composite statement" - {
+      "with invalid combinations" - {
+        "should fail" in {
+          Try(parseExpression("+*")).isFailure shouldBe true
+          Try(parseExpression("X + * X")).isFailure shouldBe true
+          Try(parseExpression("X X")).isFailure shouldBe true
+        }
+      }
       "with additions" - {
         "should parse correctly" in {
           parseExpression("XV + IV + XX") shouldBe 39
@@ -88,8 +95,13 @@ class TestParsing extends FreeSpec with NumeralParser with Matchers with Appende
           parseExpression("(X + X) * (II - II)") shouldBe 0
           parseExpression("X - (V + II)") shouldBe 3
         }
+        "should error for improper brackets" in  {
+          Try(parseExpression("(")).isFailure shouldBe true
+          Try(parseExpression("(X +)")).isFailure shouldBe true
+          Try(parseExpression("()X + X")).isFailure shouldBe true
+          Try(parseExpression("() X")).isFailure shouldBe true
+        }
       }
     }
-
   }
 }
