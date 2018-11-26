@@ -5,10 +5,16 @@ import Html.Events exposing (onInput, onClick)
 
 import Http
 import Url.Builder
+import Browser
 
 
--- main =
-  -- Html.beginnerProgram { model = init_model, view = view, update = update }
+main =
+  Browser.element
+    { init = init
+    , view = view
+    , update = update
+    , subscriptions = subscriptions
+    }
 
 
 -- MODEL
@@ -18,12 +24,17 @@ type alias Model =
   , response : String
   }
 
+init : () -> (Model, Cmd Msg)
+init _ =
+    ( init_model
+    , Cmd.none
+    )
+
 init_model : Model
 init_model =
-  { request = ""
-  , response = "Make a request"
-  }
-
+    { request = ""
+    , response = "Make a request"
+    }
 
 -- UPDATE
 
@@ -42,8 +53,20 @@ buildUrl request =
 type Msg =
   GotText (Result Http.Error String) | Change String | Submit
 
-update : Msg -> Model -> Model
-update msg model = model
+update : Msg -> Model -> (Model, Cmd Msg)
+update msg model =
+    case msg of
+        Change new_request ->
+            ({ model | request = new_request }, Cmd.none)
+        _ -> (model, Cmd.none)
+
+
+-- SUBSCRIPTIONS
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Sub.none
+
 
 -- VIEW
 

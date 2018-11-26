@@ -35,4 +35,23 @@ suite =
                     buildUrl "X + X" |>
                     Expect.equal "http://127.0.0.1:4000/?expr=X%20%2B%20X"
             ]
+        , describe "Update"
+            [ test "update request model" <|
+                \_ ->
+                    update (Change "X + X") init_model |>
+                    Tuple.first |>
+                    .request |>
+                    Expect.equal "X + X"
+            , test "update request model response" <|
+                \_ ->
+                    update (Change "X + X") init_model |>
+                    Tuple.first |>
+                    .response |>
+                    Expect.equal init_model.response
+            , test "update request cmd" <|
+                \_ ->
+                    update (Change "X + X") init_model |>
+                    Tuple.second |>
+                    Expect.equal Cmd.none
+            ]
         ]
