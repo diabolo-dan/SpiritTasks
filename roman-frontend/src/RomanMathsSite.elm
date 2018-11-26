@@ -4,9 +4,11 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
 
 import Http
+import Url.Builder
+
 
 -- main =
-  -- Html.beginnerProgram { model = model, view = view, update = update }
+  -- Html.beginnerProgram { model = init_model, view = view, update = update }
 
 
 -- MODEL
@@ -16,8 +18,8 @@ type alias Model =
   , response : String
   }
 
-model : Model
-model =
+init_model : Model
+init_model =
   { request = ""
   , response = "Make a request"
   }
@@ -25,30 +27,23 @@ model =
 
 -- UPDATE
 
--- getRomanMaths : String -> Cmd Msg
--- getRomanMaths request =
---     Http.get
---         { url = request
---         , expect = Http.expectString GotText
---         }
--- 
--- 
--- buildUrl : String -> String
--- buildUrl request =
---     Http.url "127.0.0.1:4000" [("expr", request)]
--- 
+getRomanMaths : String -> Cmd Msg
+getRomanMaths request =
+    Http.get
+        { url = request
+        , expect = Http.expectString GotText
+        }
+
+
+buildUrl : String -> String
+buildUrl request =
+    Url.Builder.crossOrigin "http://127.0.0.1:4000" [] [Url.Builder.string "expr" request]
+
 type Msg =
   GotText (Result Http.Error String) | Change String | Submit
--- 
--- update : Msg -> Model -> Model
--- update msg model =
---   update_anagrams <|
---   case msg of
---     Change new_word ->
---       { model | word = new_word}
---     AddWord word ->
---       { model | word_list = word :: model.word_list }
--- 
+
+update : Msg -> Model -> Model
+update msg model = model
 
 -- VIEW
 
