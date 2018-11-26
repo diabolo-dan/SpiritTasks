@@ -36,22 +36,39 @@ suite =
                     Expect.equal "http://127.0.0.1:4000/?expr=X%20%2B%20X"
             ]
         , describe "Update"
-            [ test "update request model" <|
+            [ test "update change model request" <|
                 \_ ->
                     update (Change "X + X") init_model |>
                     Tuple.first |>
                     .request |>
                     Expect.equal "X + X"
-            , test "update request model response" <|
+            , test "update change model response" <|
                 \_ ->
                     update (Change "X + X") init_model |>
                     Tuple.first |>
                     .response |>
                     Expect.equal init_model.response
-            , test "update request cmd" <|
+            , test "update change  cmd" <|
                 \_ ->
                     update (Change "X + X") init_model |>
                     Tuple.second |>
                     Expect.equal Cmd.none
+            , test "update submit model request" <|
+                \_ ->
+                    update Submit init_model |>
+                    Tuple.first |>
+                    .request |>
+                    Expect.equal init_model.request
+            , test "update submit model response" <|
+                \_ ->
+                    update Submit init_model |>
+                    Tuple.first |>
+                    .response |>
+                    Expect.equal init_model.response
+            , test "update submit cmd" <|
+                \_ ->
+                    update Submit init_model |>
+                    Tuple.second |>
+                    Expect.notEqual Cmd.none
             ]
         ]

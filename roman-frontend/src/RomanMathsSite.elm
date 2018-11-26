@@ -41,7 +41,7 @@ init_model =
 getRomanMaths : String -> Cmd Msg
 getRomanMaths request =
     Http.get
-        { url = request
+        { url = buildUrl request
         , expect = Http.expectString GotText
         }
 
@@ -58,6 +58,7 @@ update msg model =
     case msg of
         Change new_request ->
             ({ model | request = new_request }, Cmd.none)
+        Submit -> (model, getRomanMaths model.request)
         _ -> (model, Cmd.none)
 
 
