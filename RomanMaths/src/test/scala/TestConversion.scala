@@ -1,12 +1,14 @@
 import org.scalatest.{AppendedClues, FreeSpec, Matchers, TryValues}
 
+import scala.util.Try
+
 class TestConversion extends FreeSpec with Matchers with AppendedClues with TryValues {
 
   def assertNumeral(numeral: String, expectedValue: Int) =
-    RomanNumeral(numeral).success.value.value shouldBe expectedValue withClue s": Numeral: $numeral"
+    RomanNumeral(numeral).value shouldBe expectedValue withClue s": Numeral: $numeral"
 
   def assertBadNumeral(numeral: String) =
-    RomanNumeral(numeral).failure.exception shouldBe a [IllegalArgumentException]
+    Try(RomanNumeral(numeral)).failure.exception shouldBe a [IllegalArgumentException]
 
   "A Roman Numeral" - {
     "When Constructed" - {

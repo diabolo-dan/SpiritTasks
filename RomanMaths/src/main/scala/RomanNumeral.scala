@@ -1,5 +1,3 @@
-import scala.util.Try
-
 class RomanNumeral(val value: Int) {
 
   lazy val display: String = {
@@ -13,7 +11,7 @@ class RomanNumeral(val value: Int) {
 
 object RomanNumeral {
 
-  def apply(numeral: String): Try[RomanNumeral] = Try{
+  def apply(numeral: String): RomanNumeral = {
     val result = aggregateNumeral(numeral)
     require(result.display == numeral, s"Invalid Numeral: $numeral")
     result

@@ -8,7 +8,7 @@ trait NumeralParser extends RegexParsers {
   independently
    */
 
-  def romanNumeral: Parser[Int] = """[A-Z]+""".r ^^ {RomanNumeral(_).get.value}
+  def romanNumeral: Parser[Int] = """[A-Z]+""".r ^^ {RomanNumeral(_).value}
 
   def expr:   Parser[Int]        = term ~ rep(plus | minus) ^^ {case a ~ b => (a /: b)((acc,f) => f(acc))}
   def plus:   Parser[Int => Int] = "+" ~ term               ^^ {case _ ~ b => _ + b}
