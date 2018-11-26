@@ -6,7 +6,14 @@ import Test exposing (..)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (text, tag)
 
+import Http
+
 import RomanMathsSite exposing (..)
+
+goodGotText: Msg
+goodGotText = GotText (Ok "XX")
+badGotText: Msg
+badGotText = GotText (Err Http.Timeout)
 
 suite : Test
 suite =
@@ -70,5 +77,39 @@ suite =
                     update Submit init_model |>
                     Tuple.second |>
                     Expect.notEqual Cmd.none
+            , test "update GotText model request" <|
+                \_ ->
+                    update goodGotText init_model |>
+                    Tuple.first |>
+                    .request |>
+                    Expect.equal init_model.request
+            , test "update GotText model response" <|
+                \_ ->
+                    update goodGotText init_model |>
+                    Tuple.first |>
+                    .response |>
+                    Expect.equal "XX"
+            , test "update GotText cmd" <|
+                \_ ->
+                    update goodGotText init_model |>
+                    Tuple.second |>
+                    Expect.equal Cmd.none
+            , test "update Error model request" <|
+                \_ ->
+                    update badGotText init_model |>
+                    Tuple.first |>
+                    .request |>
+                    Expect.equal init_model.request
+            , test "update Error model response" <|
+                \_ ->
+                    update badGotText init_model |>
+                    Tuple.first |>
+                    .response |>
+                    Expect.equal "Error with request"
+            , test "update Error cmd" <|
+                \_ ->
+                    update badGotText init_model |>
+                    Tuple.second |>
+                    Expect.equal Cmd.none
             ]
         ]

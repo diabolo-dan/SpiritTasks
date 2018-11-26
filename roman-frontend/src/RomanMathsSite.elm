@@ -59,7 +59,13 @@ update msg model =
         Change new_request ->
             ({ model | request = new_request }, Cmd.none)
         Submit -> (model, getRomanMaths model.request)
-        _ -> (model, Cmd.none)
+        GotText result -> (updateHttpResponse result model, Cmd.none)
+
+updateHttpResponse: Result Http.Error String -> Model -> Model
+updateHttpResponse result model =
+    case result of
+        Ok response -> { model | response = response }
+        Err error -> { model | response = "Error with request"}
 
 
 -- SUBSCRIPTIONS
