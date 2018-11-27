@@ -8,17 +8,20 @@ trait NumeralParser extends RegexParsers {
   independently
    */
 
-  def romanNumeral: Parser[Int] = """[A-Z]+""".r ^^ {RomanNumeral(_).value}
+  def romanNumeral: Parser[BigInt] = """[A-Z]+""".r ^^ {RomanNumeral(_).value}
 
-  def expr:   Parser[Int]        = term ~ rep(plus | minus) ^^ {case a ~ b => (a /: b)((acc,f) => f(acc))}
-  def plus:   Parser[Int => Int] = "+" ~ term               ^^ {case _ ~ b => _ + b}
-  def minus:  Parser[Int => Int] = "-" ~ term               ^^ {case _ ~ b => _ - b}
+  def expr:   Parser[BigInt]        = term ~ rep(plus | minus) ^^ {case a ~ b => (a /: b)((acc,f) => f(acc))}
+  def plus:   Parser[BigInt => BigInt] = "+" ~ term               ^^ {case _ ~ b => _ + b}
+  def minus:  Parser[BigInt => BigInt] = "-" ~ term               ^^ {case _ ~ b => _ - b}
 
-  def term:   Parser[Int]        = factor ~ rep(times | divide) ^^ {case a ~ b => (a /: b)((acc,f) => f(acc))}
-  def times:  Parser[Int => Int] = "*" ~ factor                 ^^ {case _ ~ b => _ * b }
-  def divide: Parser[Int => Int] = "/" ~ factor                 ^^ {case _ ~ b => _ / b}
+  def term:   Parser[BigInt]        = powers ~ rep(times | divide) ^^ {case a ~ b => (a /: b)((acc,f) => f(acc))}
+  def times:  Parser[BigInt => BigInt] = "*" ~ powers                 ^^ {case _ ~ b => _ * b }
+  def divide: Parser[BigInt => BigInt] = "/" ~ powers                 ^^ {case _ ~ b => _ / b}
 
-  def factor: Parser[Int] = romanNumeral | "(" ~> expr <~ ")"
+  def powers: Parser[BigInt] = factor ~ rep(power) ^^ {case a ~ b => (a /: b)((acc,f) => f(acc))}
+  def power: Parser[BigInt => BigInt] =  "^" ~ factor ^^ {case _ ~ b => _ pow b.toInt }
+
+  def factor: Parser[BigInt] = romanNumeral | "(" ~> expr <~ ")"
 
 }
 

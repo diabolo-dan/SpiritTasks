@@ -1,11 +1,11 @@
-class RomanNumeral(val value: Int) {
+class RomanNumeral(val value: BigInt) {
 
   lazy val display: String = {
     for {
       (numeralValue, numeral) <- RomanNumeralMappings.orderedValues.dropWhile(_._1 > value).headOption
       numberOfAppearances = value / numeralValue
       remaining = value % numeralValue
-    } yield numeral * numberOfAppearances +  new RomanNumeral(remaining).display
+    } yield numeral * numberOfAppearances.toInt +  new RomanNumeral(remaining).display
   }.getOrElse("")
 }
 
@@ -26,7 +26,7 @@ object RomanNumeral {
   private def aggregationOperator(a: AggregationState, b: String): AggregationState =
     a.numeralValueAggregator(b)
 
-  private case class AggregationState(numeral: String, value: Int) {
+  private case class AggregationState(numeral: String, value: BigInt) {
 
     def numeralValueAggregator(target: String): AggregationState = {
       val (matching, remaining) = numeral.span(_.toString == target)
@@ -39,7 +39,10 @@ object RomanNumeral {
         prefixedTarget = prefix + target
         if (numeral.startsWith(prefixedTarget))
       }
-          yield AggregationState(numeral.substring(prefixedTarget.length), value + RomanNumeralMappings.compositeNumerals(prefixedTarget))
+          yield AggregationState(
+            numeral.substring(prefixedTarget.length),
+            value + RomanNumeralMappings.compositeNumerals(prefixedTarget)
+          )
     }.getOrElse(this)
   }
 }

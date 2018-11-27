@@ -5,7 +5,7 @@ import scala.util.Try
 class TestParsing extends FreeSpec with NumeralParser with Matchers with AppendedClues with TryValues {
 
   val parser = new NumeralParser {}
-  def parseExpression(expression: String): Int = {
+  def parseExpression(expression: String): BigInt = {
     val result = parser.parseAll(parser.expr, expression)
     result shouldBe a[Success[_]]
     result.get
@@ -74,12 +74,18 @@ class TestParsing extends FreeSpec with NumeralParser with Matchers with Appende
           parseExpression("XX / II / III") shouldBe 3
         }
       }
+      "with powers" - {
+        "should parse correctly" in {
+          parseExpression("II ^ III ^ IV") shouldBe BigInt(2).pow(12)
+        }
+      }
       "with multiple forms" - {
         "should have the correct precedence" in {
           parseExpression("XX + X * II") shouldBe 40
           parseExpression("XX - X / II") shouldBe 15
           parseExpression("XX - X + II") shouldBe 12
           parseExpression("X * X / II") shouldBe 50
+          parseExpression("III * X ^ II") shouldBe 300
         }
       }
       "with brackets" - {
