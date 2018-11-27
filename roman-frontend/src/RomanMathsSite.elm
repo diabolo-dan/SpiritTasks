@@ -3,7 +3,7 @@ import Html exposing (Html, Attribute, div, input, text, button)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
 
-import Http
+import Http exposing (..)
 import Url.Builder
 import Browser
 
@@ -58,14 +58,32 @@ update msg model =
     case msg of
         Change new_request ->
             ({ model | request = new_request }, Cmd.none)
-        Submit -> (model, getRomanMaths model.request)
-        GotText result -> (updateHttpResponse result model, Cmd.none)
+        Submit ->
+            (model, getRomanMaths model.request)
+        GotText result ->
+            (updateHttpResponse result model, Cmd.none)
 
 updateHttpResponse: Result Http.Error String -> Model -> Model
 updateHttpResponse result model =
     case result of
-        Ok response -> { model | response = response }
-        Err error -> { model | response = "Error with request"}
+        Ok response ->
+            { model | response = response }
+        Err error ->
+            { model | response = "Error with request: " ++ handleError error}
+
+handleError: Http.Error -> String
+handleError error =
+    case error of
+        Timeout ->
+            "Timeout"
+        NetworkError ->
+            "NetworkError"
+        BadStatus reason ->
+            "BadStatus: " ++ String.fromInt reason
+        BadUrl reason ->
+            "BadUrl: " ++ reason
+        BadBody reason ->
+            "BadBody: " ++ reason
 
 
 -- SUBSCRIPTIONS
