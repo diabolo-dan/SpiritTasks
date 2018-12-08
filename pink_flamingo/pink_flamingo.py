@@ -1,13 +1,17 @@
 #! /usr/bin/python3
 import gmpy
+from typing import List, Callable, Tuple
 
-def generic_fizz_buzz(rules, n):
-    """Takes a list of rules from conditions (as a boolean function on a number) to desired output string.  Returns a callable which, when supplied an integer n, will return the output string determined by the given rules.  An earlier rule will take precedence over an later rule.  If no rule matches, the input n will be returned as a string.
+Rule = Tuple[Callable[[int], bool], str]
+
+def generic_fizz_buzz(rules: List[Rule], n: int) -> str:
+    """
+    For each rule, if it applies return the appropriate string.
 
     E.g. for fizzbuzz rules are:
+        x % 15 == 0 -> 'fizzbuzz'
         x % 3 == 0  -> 'fizz',
         x % 5 == 0  -> 'buzz',
-        x % 15 == 0 -> 'fizzbuzz'
     """
 
     for condition, output in rules:
@@ -17,19 +21,19 @@ def generic_fizz_buzz(rules, n):
         return str(n)
 
 
-def is_fib(n):
+def is_fib(n: int) -> bool:
     """Definition as given in task"""
     x = 5 * n**2
     return gmpy.is_square(x + 4) or gmpy.is_square(x - 4)
 
 
-FIZZ_BUZZ_RULES = [
+FIZZ_BUZZ_RULES: List[Rule] = [
         (lambda x: x % 15 == 0, 'fizzbuzz'),
         (lambda x: x % 3 == 0,  'fizz'),
         (lambda x: x % 5 == 0,  'buzz'),
 ]
 
-FLAMINGO_RULES = [
+FLAMINGO_RULES: List[Rule] = [
     (lambda x: x % 15 == 0 and is_fib(x), 'pink flamingo'),
     (is_fib, 'flamingo')
 ] + FIZZ_BUZZ_RULES
