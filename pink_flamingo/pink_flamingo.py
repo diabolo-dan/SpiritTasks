@@ -1,7 +1,7 @@
 #! /usr/bin/python3
 import gmpy
 
-class GenericFizzBuzz(object):
+def generic_fizz_buzz(rules):
     """Takes a list of rules from conditions (as a boolean function on a number) to desired output string.  Returns a callable which, when supplied an integer n, will return the output string determined by the given rules.  An earlier rule will take precedence over an later rule.  If no rule matches, the input n will be returned as a string.
 
     E.g. for fizzbuzz rules are:
@@ -10,15 +10,13 @@ class GenericFizzBuzz(object):
         x % 15 == 0 -> 'fizzbuzz'
     """
 
-    def __init__(self, rules):
-        self.rules = rules
-
-    def __call__(self, n):
-        for condition, output in self.rules:
+    def fizz_buzz(n):
+        for condition, output in rules:
             if condition(n):
                 return  output
         else:
             return str(n)
+    return fizz_buzz
 
 
 FIZZ_BUZZ_RULES = [
@@ -26,7 +24,7 @@ FIZZ_BUZZ_RULES = [
         (lambda x: x % 3 == 0,  'fizz'),
         (lambda x: x % 5 == 0,  'buzz'),
 ]
-fizz_buzz = GenericFizzBuzz(FIZZ_BUZZ_RULES)
+fizz_buzz = generic_fizz_buzz(FIZZ_BUZZ_RULES)
 
 def is_fib(n):
     """Definition as given in task"""
@@ -38,7 +36,7 @@ FLAMINGO_RULES = [
     (is_fib, 'flamingo')
 ] + FIZZ_BUZZ_RULES
 
-flamingo = GenericFizzBuzz(FLAMINGO_RULES)
+flamingo = generic_fizz_buzz(FLAMINGO_RULES)
 
 def main():
     for i in range(1, 101):
