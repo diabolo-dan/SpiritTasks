@@ -17,23 +17,24 @@ def generic_fizz_buzz(rules, n):
         return str(n)
 
 
+def is_fib(n):
+    """Definition as given in task"""
+    x = 5 * n**2
+    return gmpy.is_square(x + 4) or gmpy.is_square(x - 4)
+
+
 FIZZ_BUZZ_RULES = [
         (lambda x: x % 15 == 0, 'fizzbuzz'),
         (lambda x: x % 3 == 0,  'fizz'),
         (lambda x: x % 5 == 0,  'buzz'),
 ]
-fizz_buzz = lambda n: generic_fizz_buzz(FIZZ_BUZZ_RULES, n)
-
-def is_fib(n):
-    """Definition as given in task"""
-    x = 5 * n**2
-    return gmpy.is_square(x + 4) or gmpy.is_square(x - 4)
 
 FLAMINGO_RULES = [
     (lambda x: x % 15 == 0 and is_fib(x), 'pink flamingo'),
     (is_fib, 'flamingo')
 ] + FIZZ_BUZZ_RULES
 
+fizz_buzz = lambda n: generic_fizz_buzz(FIZZ_BUZZ_RULES, n)
 flamingo = lambda n: generic_fizz_buzz(FLAMINGO_RULES, n)
 
 def main():
