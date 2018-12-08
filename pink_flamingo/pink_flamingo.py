@@ -50,7 +50,7 @@ FLAMINGO_RULES = FIZZ_BUZZ_RULES + [
 flamingo = GenericFizzBuzz(FLAMINGO_CONDITIONS, FLAMINGO_RULES)
 
 def main():
-    for i in range(1, 100):
+    for i in range(1, 101):
         print(flamingo(i))
 
 if __name__ == '__main__':
