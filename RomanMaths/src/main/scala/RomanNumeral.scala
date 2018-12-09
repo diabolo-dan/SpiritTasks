@@ -15,25 +15,25 @@ class RomanNumeral(val value: BigInt) {
 object RomanNumeral {
 
   def apply(numeral: String): RomanNumeral = {
-    val numeralValue = decomposeNumeral(numeral).value
+    val numeralValue = deconstructNumeral(numeral).value
     val constructedNumeral = new RomanNumeral(numeralValue)
     require(constructedNumeral.display == numeral, s"Invalid Numeral: $numeral (${constructedNumeral.display})")
     constructedNumeral
   }
 
-  private def decomposeNumeral(numeral: String): Decomposition = {
-    val startState = this.Decomposition(numeral, 0)
+  private def deconstructNumeral(numeral: String): Deconstruction = {
+    val startState = this.Deconstruction(numeral, 0)
     baseNumeralsOrderedLongestFirst
       .foldLeft(startState)(extractValueForBaseNumeral)
   }
 
-  private def extractValueForBaseNumeral(state: Decomposition, baseNumeral: String): Decomposition =
+  private def extractValueForBaseNumeral(state: Deconstruction, baseNumeral: String): Deconstruction =
     state.removeBaseNumeral(baseNumeral)
 
-  private case class Decomposition(remainingNumeral: String, value: Int) {
+  private case class Deconstruction(remainingNumeral: String, value: Int) {
 
-    def removeBaseNumeral(baseNumeral: String): Decomposition =
-      Decomposition(
+    def removeBaseNumeral(baseNumeral: String): Deconstruction =
+      Deconstruction(
         reducedNumeral(baseNumeral),
         value + baseNumeralValue(baseNumeral)
       )
