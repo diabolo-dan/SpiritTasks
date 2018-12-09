@@ -5943,8 +5943,12 @@ var author$project$RomanMathsSite$handleError = function (error) {
 		case 'NetworkError':
 			return 'NetworkError';
 		case 'BadStatus':
-			var reason = error.a;
-			return 'BadStatus: ' + elm$core$String$fromInt(reason);
+			if (error.a === 400) {
+				return 'Invalid Roman Numeral Arithmetic';
+			} else {
+				var reason = error.a;
+				return 'BadStatus: ' + elm$core$String$fromInt(reason);
+			}
 		case 'BadUrl':
 			var reason = error.a;
 			return 'BadUrl: ' + reason;
@@ -5965,7 +5969,7 @@ var author$project$RomanMathsSite$updateHttpResponse = F2(
 			return _Utils_update(
 				model,
 				{
-					response: 'Error with request: ' + author$project$RomanMathsSite$handleError(error)
+					response: 'Error: ' + author$project$RomanMathsSite$handleError(error)
 				});
 		}
 	});

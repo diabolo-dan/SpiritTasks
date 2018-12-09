@@ -105,7 +105,7 @@ suite =
                     update badGotText init_model |>
                     Tuple.first |>
                     .response |>
-                    Expect.equal "Error with request: Timeout"
+                    Expect.equal "Error: Timeout"
             , test "update Error cmd" <|
                 \_ ->
                     update badGotText init_model |>

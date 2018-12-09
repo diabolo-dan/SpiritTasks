@@ -69,7 +69,7 @@ updateHttpResponse result model =
         Ok response ->
             { model | response = response }
         Err error ->
-            { model | response = "Error with request: " ++ handleError error}
+            { model | response = "Error: " ++ handleError error}
 
 handleError: Http.Error -> String
 handleError error =
@@ -78,6 +78,8 @@ handleError error =
             "Timeout"
         NetworkError ->
             "NetworkError"
+        BadStatus 400 ->
+            "Invalid Roman Numeral Arithmetic"
         BadStatus reason ->
             "BadStatus: " ++ String.fromInt reason
         BadUrl reason ->
