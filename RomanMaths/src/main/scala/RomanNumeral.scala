@@ -15,43 +15,40 @@ class RomanNumeral(val value: BigInt) {
 object RomanNumeral {
 
   def apply(numeral: String): RomanNumeral = {
-    val numeralValue = decomposeNumeral(NumeralDecomposition(numeral, 0)).value
+    val numeralValue = decomposeNumeral(numeral).value
     val constructedNumeral = new RomanNumeral(numeralValue)
     require(constructedNumeral.display == numeral, s"Invalid Numeral: $numeral (${constructedNumeral.display})")
     constructedNumeral
   }
 
-  private def decomposeNumeral(numeralDecomposition: NumeralDecomposition): NumeralDecomposition = {
-    val value =
-      orderedValues
-        .map(_._1)
-        .sortBy(- _.size)
-        .foldLeft(numeralDecomposition)(extractValueForComponent)
-    value
+  private def decomposeNumeral(numeral: String): Decomposition = {
+    val startState = this.Decomposition(numeral, 0)
+    baseNumeralsOrderedLongestFirst
+      .foldLeft(startState)(extractValueForBaseNumeral)
   }
 
-  private def extractValueForComponent(state: NumeralDecomposition , component: String): NumeralDecomposition =
-    state.removeComponent(component)
+  private def extractValueForBaseNumeral(state: Decomposition, baseNumeral: String): Decomposition =
+    state.removeBaseNumeral(baseNumeral)
 
-  private case class NumeralDecomposition(remainingNumeral: String, value: Int) {
+  private case class Decomposition(remainingNumeral: String, value: Int) {
 
-    def removeComponent(component: String): NumeralDecomposition =
-      NumeralDecomposition(
-        reducedNumeral(component),
-        value + componentValue(component)
+    def removeBaseNumeral(baseNumeral: String): Decomposition =
+      Decomposition(
+        reducedNumeral(baseNumeral),
+        value + baseNumeralValue(baseNumeral)
       )
 
-    private def reducedNumeral(component: String): String =
-      remainingNumeral.replaceAll(component, "")
+    private def reducedNumeral(baseNumeral: String): String =
+      remainingNumeral.replaceAll(baseNumeral, "")
 
-    private def componentValue(component: String): Int =
-        numberOfMatches(component) * numeralValue(component)
+    private def baseNumeralValue(baseNumeral: String): Int =
+      numberOfMatches(baseNumeral) * numeralValue(baseNumeral)
 
-    private def numberOfMatches(component: String): Int =
-      component
+    private def numberOfMatches(baseNumeral: String): Int =
+      baseNumeral
         .r
         .findAllMatchIn(remainingNumeral)
-        . size
+        .size
   }
 
   val orderedValues = Seq(
@@ -69,6 +66,11 @@ object RomanNumeral {
     "IV" -> 4,
     "I"  -> 1
   )
+
+  val baseNumeralsOrderedLongestFirst =
+    orderedValues
+      .map(_._1)
+      .sortBy(-_.size)
 
   val numeralValue = orderedValues.toMap
 }
