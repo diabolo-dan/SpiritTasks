@@ -11,7 +11,7 @@ Alternatively:
  The API does not support exponents (directly or derived) larger than 2^31
 
 
-# To run pink_flamingo (Python3 is required.  Tested with python 3.7)
+# To run pink_flamingo (Python3 is required (>=3.6?).  Tested with python 3.7)
 - install required library (gmpy) (e.g., `pip3 install pink_flamingo/requirements.txt`)
 - run: `pink_flamingo/pink_flamingo.py`
 
