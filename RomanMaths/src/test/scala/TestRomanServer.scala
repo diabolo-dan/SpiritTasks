@@ -31,8 +31,8 @@ class TestRomanServer extends FreeSpec with Matchers {
     }
     "should respond with failure to unparseable data" in {
       test(RomanMathServer) { host =>
-        requests.get(host, params = Map("expr" -> "IC")).statusCode shouldBe 500
-        requests.get(host, params = Map("expr" -> "C + * X")).statusCode shouldBe 500
+        requests.get(host, params = Map("expr" -> "IC")).statusCode shouldBe 400
+        requests.get(host, params = Map("expr" -> "C + * X")).statusCode shouldBe 400
       }
     }
   }

@@ -1,3 +1,4 @@
+import scala.util.Try
 import scala.util.parsing.combinator.RegexParsers
 
 trait NumeralParser extends RegexParsers {
@@ -8,7 +9,9 @@ trait NumeralParser extends RegexParsers {
   independently
    */
 
-  def romanNumeral: Parser[BigInt] = """[A-Z]+""".r ^^ {RomanNumeral(_).value}
+  def romanNumeral: Parser[BigInt] = """[A-Z]+""".r ^? {
+    case x if Try(RomanNumeral(x)).isSuccess => RomanNumeral(x).value
+  }
 
   def expr:   Parser[BigInt]        = term ~ rep(plus | minus) ^^ {case a ~ b => (a /: b)((acc,f) => f(acc))}
   def plus:   Parser[BigInt => BigInt] = "+" ~ term               ^^ {case _ ~ b => _ + b}
@@ -26,9 +29,8 @@ trait NumeralParser extends RegexParsers {
 }
 
 object NumeralParser extends NumeralParser {
-  def parseExpression(expression: String): Option[RomanNumeral] =
-    parseAll(expr, expression) match {
-      case Success(value, _) => Option(new RomanNumeral(value))
-      case _ => None
+  def parseExpression(expression: String): ParseResult[RomanNumeral] =
+    parseAll(expr, expression) map {
+      case value: BigInt => new RomanNumeral(value)
     }
 }

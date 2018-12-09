@@ -19,8 +19,7 @@ class TestParsing extends FreeSpec with NumeralParser with Matchers with Appende
     }
     "when invalid" - {
       "should raise an error" in {
-        val result = Try(parseExpression("VX"))
-        result.failure.exception shouldBe a [IllegalArgumentException]
+        Try(parseExpression("VX")).isFailure shouldBe true
       }
     }
   }

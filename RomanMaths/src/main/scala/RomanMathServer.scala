@@ -5,11 +5,19 @@ object RomanMathServer extends cask.MainRoutes {
 
   @cask.get("/")
   def respond(expr: String, request: cask.Request): cask.Response = {
-    val output = NumeralParser.parseExpression(expr)
-
-    cask.Response(output.get.display, headers=enableCorsHeaders)
-
+    NumeralParser.parseExpression(expr) match {
+      case NumeralParser.Success(numeral, _) =>
+        response(200, numeral.display)
+      case NumeralParser.Failure(message, _) =>
+        response(400, message)
+      case NumeralParser.Error(message, _) =>
+        response(400, message)
+    }
   }
+
+  def response(statusCode: Int, data: String) =
+    cask.Response(data, statusCode=statusCode, headers=enableCorsHeaders)
+
 
   def enableCorsHeaders : Seq[(String, String)] = Seq(
     "Access-Control-Allow-Origin" -> "*"
