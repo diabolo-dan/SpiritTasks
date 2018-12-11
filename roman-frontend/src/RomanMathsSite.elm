@@ -38,18 +38,6 @@ init_model =
 
 -- UPDATE
 
-getRomanMaths : String -> Cmd Msg
-getRomanMaths request =
-    Http.get
-        { url = buildUrl request
-        , expect = Http.expectString GotText
-        }
-
-
-buildUrl : String -> String
-buildUrl request =
-    Url.Builder.crossOrigin "http://127.0.0.1:4000" [] [Url.Builder.string "expr" request]
-
 type Msg =
   GotText (Result Http.Error String) | Change String | Submit
 
@@ -62,6 +50,18 @@ update msg model =
             (model, getRomanMaths model.request)
         GotText result ->
             (updateHttpResponse result model, Cmd.none)
+
+getRomanMaths : String -> Cmd Msg
+getRomanMaths request =
+    Http.get
+        { url = buildUrl request
+        , expect = Http.expectString GotText
+        }
+
+
+buildUrl : String -> String
+buildUrl request =
+    Url.Builder.crossOrigin "http://127.0.0.1:4000" [] [Url.Builder.string "expr" request]
 
 updateHttpResponse: Result Http.Error String -> Model -> Model
 updateHttpResponse result model =
